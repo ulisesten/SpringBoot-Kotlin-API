@@ -8,7 +8,10 @@ import javax.persistence.GeneratedValue
 @Entity
 class Customer(
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Long = 0,
+    var userid: Long = 0,
     var firstName: String = "",
-    var lastName: String = ""
+    var lastName: String = "",
+    var availableLimit: Double = 0.0,
+    var currentBalance: Double = 0.0,
+    var paidBalance: Double = 0.0
 )

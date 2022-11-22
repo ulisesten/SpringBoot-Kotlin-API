@@ -24,7 +24,7 @@ class CustomerController(val repository: CustomerRepository) {
 
     @PutMapping("/{id}")
     fun updateCustomer(@PathVariable id: Long, @RequestBody customer: Customer) {
-        assert(customer.id == id)
+        assert(customer.userid == id)
         repository.save(customer)
     }
 
