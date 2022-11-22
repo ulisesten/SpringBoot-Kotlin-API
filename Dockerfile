@@ -1,17 +1,20 @@
-FROM maven:3.5.4-jdk-8-alpine as maven
+# AS <NAME> to name this stage as maven
+FROM maven:3.6.3 AS maven
+LABEL MAINTAINER="ulises.mtz.el@gmail.com"
 
-COPY ./pom.xml ./pom.xml
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+# Compile and package the application to an executable JAR
+RUN mvn package 
 
-COPY ./src ./src
+# For Java 11, 
+FROM adoptopenjdk/openjdk11:alpine-jre
 
-RUN mvn dependency:go-offline -B
+ARG JAR_FILE=spring-boot-api-tutorial.jar
 
-RUN mvn package
+WORKDIR /opt/app
 
-FROM openjdk:8u171-jre-alpine
+# Copy the spring-boot-api-tutorial.jar from the maven stage to the /opt/app directory of the current stage.
+COPY --from=maven /usr/src/app/target/${JAR_FILE} /opt/app/
 
-WORKDIR /adevguide
-
-COPY --from=maven target/SimpleJavaProject-*.jar ./SimpleJavaProject.jar
-
-CMD ["java", "-jar", "./SimpleJavaProject.jar"]
+ENTRYPOINT ["java","-jar","spring-boot-api-tutorial.jar"]
