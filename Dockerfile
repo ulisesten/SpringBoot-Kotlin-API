@@ -1,5 +1,5 @@
 # AS <NAME> to name this stage as maven
-FROM maven:3.6.3 AS maven
+FROM maven:3.8.4 AS maven
 LABEL MAINTAINER="ulises.mtz.el@gmail.com"
 
 WORKDIR /usr/src/app
@@ -8,7 +8,7 @@ COPY . /usr/src/app
 RUN mvn package 
 
 # For Java 11, 
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM openjdk:17
 
 ARG JAR_FILE=spring-boot-api-tutorial.jar
 
