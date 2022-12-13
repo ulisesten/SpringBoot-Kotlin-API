@@ -22,9 +22,10 @@ class CreditInfo(
     var availableLimit: Double = 0.0,
     var currentBalance: Double = 0.0,
     var paidBalance: Double = 0.0,
+
+    @Column(name = "customer_id")
+    var customerId: Long = 0,
     @OneToOne
     @PrimaryKeyJoinColumn(name="customer_id", referencedColumnName="credit_id")
-    var customer: Customer? = null,
-    @Column(name = "customer_id")
-    var customerId: Long = 0
+    var customer: Customer? = null
 )

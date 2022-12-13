@@ -7,12 +7,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.CascadeType
 import javax.persistence.OneToOne
 import javax.persistence.JoinColumn
-import javax.persistence.Table
 import javax.persistence.Column
-
-import javax.persistence.PrimaryKeyJoinColumn
-
-import com.api.moviliza.model.CreditInfo
 
 @Entity
 class Customer(
@@ -28,5 +23,11 @@ class Customer(
     @JoinColumn(name = "creditInfoId")
     var creditInfo: CreditInfo? = null,
     @Column(name = "credit_id")
-    var creditId: Long = 0
+    var creditId: Long = 0,
+
+    @OneToOne(cascade = arrayOf(CascadeType.ALL))
+    @JoinColumn(name = "creditRequestId")
+    var creditRequest: CreditRequest? = null,
+    @Column(name = "request_id")
+    var requestId: Long = 0
 )

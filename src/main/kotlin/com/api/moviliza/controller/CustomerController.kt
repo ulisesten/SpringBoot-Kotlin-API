@@ -25,21 +25,13 @@ class CustomerController(val repository: CustomerRepository, @Autowired val auth
     val bcryptEncoder = BCryptPasswordEncoder()
 
     @GetMapping
-    fun findAll() = repository.findAll()
+    fun findAll(): Iterable<Customer> {
 
-    @PostMapping
-    fun addCustomer(@RequestBody customer: Customer): JSONObject{
-        customer.password = this.encode(customer.password)
-        repository.save(customer)
 
-        val json = JSONObject()
+        return repository.findAll()
 
-        json["token"] = Jwt().generateToken(customer)
-        json["email"] = customer.email
-        json["userId"] = customer.userId
-
-        return json
     }
+
 
     @GetMapping("/{email}")
     fun checkCustomer(@PathVariable("email") email: String): JSONObject {

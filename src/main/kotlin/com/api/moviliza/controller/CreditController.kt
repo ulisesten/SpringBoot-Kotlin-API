@@ -25,18 +25,20 @@ class CreditController(val repository: CreditRepository, @Autowired val customer
     fun findAll() = repository.findAll()
 
     @PostMapping
-    fun addCredit(@RequestBody credit: CreditInfo){
+    fun addCredit(@RequestBody credit: CreditInfo) {
 
-            val customer = customerRepository.findById(credit.customerId).get()
-            repository.save(credit)
+        val customer = customerRepository.findById(credit.customerId).get()
 
-            customer.creditInfo = credit
-            customer.creditActive = true
-            customer.creditId = credit.creditInfoId
-            customerRepository.save(customer)
+        credit.customer = customer
+        credit.customerId = customer.userId
 
-            credit.customer = customer
-            repository.save(credit)
+        val savedCredit = repository.save(credit)
+
+        customer.creditId = savedCredit.creditInfoId
+        customer.creditInfo = savedCredit
+        customer.creditActive = true
+
+        customerRepository.save(customer)
 
     }
 

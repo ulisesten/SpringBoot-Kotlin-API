@@ -17,9 +17,10 @@ import com.api.moviliza.model.Customer
 @Entity
 class CreditRequest (
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "creditInfoId")
+    @Column(name = "creditRequestId")
     var creditRequestId: Long = 0,
-    var valor_vehiculo: Long = 0,
+	var nombre: String = "",
+    var valorVehiculo: Long = 0,
 	var inicial:String = "",
 	var plazo:String = "",
 	var particular: Boolean = false,
@@ -28,15 +29,16 @@ class CreditRequest (
 	var independiente: Boolean = false,
 	var celular:String = "",
 	var ingresos: Long = 0,
-	var direccion:String = "",
-	var lugar_de_trabajo:String = "",
-	var estado_civil:String = "",
-
+	var domicilio:String = "",
+	var lugarDeTrabajo:String = "",
+	var estadoCivil:String = "",
+	
+	@Column(name = "customer_id")
+	var customerId: Long = 0,
     @OneToOne
-    @PrimaryKeyJoinColumn(name="customer_id", referencedColumnName="credit_id")
+    @PrimaryKeyJoinColumn(name="customer_id", referencedColumnName="credit_request_id")
     var customer: Customer? = null
-    
-) {
-    @Column(name = "customer_id")
-    var customerId: Long = 0
-}
+
+
+
+)
