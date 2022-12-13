@@ -5,6 +5,8 @@ import org.jose4j.jwa.AlgorithmConstraints
 import org.jose4j.jws.AlgorithmIdentifiers
 import org.jose4j.jws.JsonWebSignature
 import org.jose4j.jwt.JwtClaims
+import org.jose4j.jwt.consumer.InvalidJwtException
+import org.jose4j.jwt.consumer.JwtConsumerBuilder
 
 
 class Jwt {
@@ -15,10 +17,6 @@ class Jwt {
     fun generateToken(customer: Customer): String {
         val claims = addClaims(customer);
 		return doGenerateToken(claims, customer.firstName)
-    }
-
-    fun validateToken(): Boolean {
-        return true
     }
 
     private fun addClaims(customer: Customer): JwtClaims {
@@ -43,5 +41,28 @@ class Jwt {
             jws.setPayload(claims.toJson())
 
         return jws.compactSerialization
+    }
+
+    fun validateToken(jwt: String): Map<String?, Any?>? {
+        lateinit var jwtClaims: JwtClaims
+
+        val jwtConsumer = JwtConsumerBuilder() // required for NONE alg
+                .setJwsAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS) // disable signature requirement
+                .setDisableRequireSignature() // require the JWT to have iat field
+                .setRequireIssuedAt() // require the JWT to have exp field
+                .setRequireExpirationTime() // expect the iss to be https://codecurated.com
+                //.setExpectedIssuer("https://moviliza.com")
+                .build()
+
+        try {
+            val jwtContext = jwtConsumer.process(jwt)
+            val jws = jwtContext.joseObjects[0] as JsonWebSignature
+            jwtClaims = jwtContext.jwtClaims
+
+        } catch (e: InvalidJwtException){
+            return null
+        }
+
+        return jwtClaims.claimsMap
     }
 }

@@ -14,63 +14,41 @@ import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
+import javax.xml.bind.JAXBElement.GlobalScope
 
 
 //val creditRepository = CreditRepository
 
 @RestController
-@RequestMapping("/customers")
-class CustomerController(val repository: CustomerRepository, @Autowired val authenticationManager: AuthenticationManager) {
+@RequestMapping("/authenticate")
+class LoginController(val repository: CustomerRepository, @Autowired val authenticationManager: AuthenticationManager) {
 
     val bcryptEncoder = BCryptPasswordEncoder()
 
-    @GetMapping
-    fun findAll() = repository.findAll()
 
     @PostMapping
-    fun addCustomer(@RequestBody customer: Customer): JSONObject{
-        customer.password = this.encode(customer.password)
-        repository.save(customer)
+    @Throws(java.lang.Exception::class)
+    fun createAuthenticationToken(@RequestBody request: JwtRequest?): JSONObject? {
+        val dbCustomer = repository.findByEmail(request!!.email.toString())
 
         val json = JSONObject()
 
-        json["token"] = Jwt().generateToken(customer)
-        json["email"] = customer.email
-        json["userId"] = customer.userId
+        if(dbCustomer == null)
+            return null
 
-        return json
-    }
-
-    @GetMapping("/{email}")
-    fun checkCustomer(@PathVariable("email") email: String): JSONObject {
-        val dbCustomer = repository.findByEmail(email)
-
-        val json = JSONObject()
-
-        if(dbCustomer != null) {
-            json["token"] = Jwt().generateToken(dbCustomer)
-            json["email"] = dbCustomer.email
-            json["userId"] = dbCustomer.userId
-        }
-
-        return json
-    }
-    
-
-    @PutMapping("/{id}")
-    fun updateCustomer(@PathVariable id: Long, @RequestBody customer: Customer) {
-        assert(customer.userId == id)
-        repository.save(customer)
-    }
+        if(dbCustomer.password == bcryptEncoder.encode(request.password))
+            return null
 
 
-    @DeleteMapping("/{id}")
-    fun removeCustomer(@PathVariable customer: Customer)
-            = repository.delete(customer)
-    
-    fun encode(password: String):String {
+            json.run {
+                this["token"] = Jwt().generateToken(dbCustomer)
+                this["email"] = dbCustomer.email
+                this["userId"] = dbCustomer.userId
+            }.apply {
+                return json
+            }
 
-        return bcryptEncoder.encode(password)
+
     }
 
     @Throws(Exception::class)
@@ -93,5 +71,5 @@ class CustomerController(val repository: CustomerRepository, @Autowired val auth
         }
         return dbCustomer
     }
-    
+
 }

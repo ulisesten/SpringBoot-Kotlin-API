@@ -1,8 +1,6 @@
 package com.api.moviliza.controller
 
-import com.api.moviliza.model.Customer
 import com.api.moviliza.model.CreditRequest
-import com.api.moviliza.persistence.CustomerRepository
 import com.api.moviliza.persistence.CreditRequestRepository
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-//val creditRepository = CreditRepository
-
 @RestController
 @RequestMapping("/credit_requests")
 class CreditRequestController(val repository: CreditRequestRepository) {
@@ -23,24 +19,18 @@ class CreditRequestController(val repository: CreditRequestRepository) {
     fun findAll() = repository.findAll()
 
     @PostMapping
-    fun addCustomer(@RequestBody creditRequest: CreditRequest)
+    fun addCreditRequest(@RequestBody creditRequest: CreditRequest)
             = repository.save(creditRequest)
     
 
     @PutMapping("/{id}")
-    fun updateCustomer(@PathVariable id: Long, @RequestBody creditRequest: CreditRequest) {
-        assert(creditRequest.creditRequestId == id)
-        repository.save(creditRequest)
-    }
-
-    @PutMapping("/credit/{id}")
-    fun updateCustomerCredit(@PathVariable id: Long, @RequestBody creditRequest: CreditRequest) {
+    fun updateCreditRequest(@PathVariable id: Long, @RequestBody creditRequest: CreditRequest) {
         assert(creditRequest.creditRequestId == id)
         repository.save(creditRequest)
     }
 
     @DeleteMapping("/{id}")
-    fun removeCustomer(@PathVariable creditRequest: CreditRequest)
+    fun removeCreditRequest(@PathVariable creditRequest: CreditRequest)
             = repository.delete(creditRequest)
 
     @GetMapping("/{id}")
