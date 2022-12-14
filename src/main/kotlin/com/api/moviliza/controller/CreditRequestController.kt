@@ -3,7 +3,10 @@ package com.api.moviliza.controller
 import com.api.moviliza.model.CreditRequest
 import com.api.moviliza.persistence.CreditRequestRepository
 import com.api.moviliza.persistence.CustomerRepository
+import org.hibernate.loader.plan.spi.EntityReturn
+import org.jose4j.json.internal.json_simple.JSONObject
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -21,7 +24,7 @@ class CreditRequestController(val repository: CreditRequestRepository, @Autowire
     fun findAll() = repository.findAll()
 
     @PostMapping
-    fun addCreditRequest(@RequestBody creditRequest: CreditRequest) {
+    fun addCreditRequest(@RequestBody creditRequest: CreditRequest): JSONObject {
         val customer = customerRepository.findById(creditRequest.customerId).get()
         creditRequest.customer = customer
         creditRequest.customerId = customer.userId
@@ -31,6 +34,12 @@ class CreditRequestController(val repository: CreditRequestRepository, @Autowire
         customer.creditRequest = savedRequest
         customerRepository.save(customer)
 
+
+        val json = JSONObject()
+
+        json["creditRequestId"] = savedRequest.creditRequestId
+
+        return json
     }
     
 
