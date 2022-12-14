@@ -29,7 +29,7 @@ class SecurityConfiguration: WebSecurityConfigurerAdapter() {
     .disable()
     .addFilterBefore(JwtRequestFilter(), UsernamePasswordAuthenticationFilter::class.java)
     .authorizeRequests()
-    .antMatchers( "/*")
+    .antMatchers( "/**")
     .permitAll()
     .antMatchers( "/credits", "/customers").access("hasAuthority('JWT_USER')")
     .anyRequest().authenticated().and()
