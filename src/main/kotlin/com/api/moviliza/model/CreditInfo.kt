@@ -22,7 +22,8 @@ class CreditInfo(
     var availableLimit: Double = 0.0,
     var currentBalance: Double = 0.0,
     var paidBalance: Double = 0.0,
-
+    var term: Int = 0,
+    var interest: Float = 0f,
     @Column(name = "customer_id")
     var customerId: Long = 0,
     @OneToOne
