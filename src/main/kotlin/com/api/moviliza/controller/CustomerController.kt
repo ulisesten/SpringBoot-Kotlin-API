@@ -30,12 +30,13 @@ class CustomerController(val repository: CustomerRepository, @Autowired val auth
     }
 
     @GetMapping("/{id}")
-    fun checkCustomer(@PathVariable("id") id: Long): JSONObject? {
+    fun checkCustomer(@PathVariable("id") id: Long): JSONObject {
+        val json = JSONObject()
         return try {
             val dbOptional = repository.findById(id)
             val dbCustomer = dbOptional.get()
 
-            val json = JSONObject()
+
 
             json["token"] = Jwt().generateToken(dbCustomer)
             json["email"] = dbCustomer.email
@@ -45,7 +46,8 @@ class CustomerController(val repository: CustomerRepository, @Autowired val auth
 
             json
         } catch (e: Exception){
-            null
+            json["message"] = "customer not found"
+            json
         }
     }
 
