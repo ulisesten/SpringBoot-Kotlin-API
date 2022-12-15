@@ -40,6 +40,7 @@ class CustomerController(val repository: CustomerRepository, @Autowired val auth
             json["token"] = Jwt().generateToken(dbCustomer)
             json["email"] = dbCustomer.email
             json["userId"] = dbCustomer.userId
+            json["creditActive"] = dbCustomer.creditActive
 
             json
         } catch (e: Exception){
