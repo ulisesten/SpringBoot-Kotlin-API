@@ -41,6 +41,7 @@ class CustomerController(val repository: CustomerRepository, @Autowired val auth
             json["email"] = dbCustomer.email
             json["userId"] = dbCustomer.userId
             json["creditActive"] = dbCustomer.creditActive
+            json["creditId"] = dbCustomer.creditId
 
             json
         } catch (e: Exception){
