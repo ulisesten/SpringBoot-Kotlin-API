@@ -26,14 +26,30 @@ class CustomerController(val repository: CustomerRepository, @Autowired val auth
 
     @GetMapping
     fun findAll(): Iterable<Customer> {
-
-
         return repository.findAll()
+    }
 
+    @GetMapping("/{id}")
+    fun checkCustomer(@PathVariable("id") id: Long): JSONObject? {
+        return try {
+            val dbOptional = repository.findById(id)
+            val dbCustomer = dbOptional.get()
+
+            val json = JSONObject()
+
+            json["token"] = Jwt().generateToken(dbCustomer)
+            json["email"] = dbCustomer.email
+            json["userId"] = dbCustomer.userId
+
+            json
+        } catch (e: Exception){
+            null
+        }
     }
 
 
-    @GetMapping("/{email}")
+
+    /*@GetMapping("/{email}")
     fun checkCustomer(@PathVariable("email") email: String): JSONObject {
         val dbCustomer = repository.findByEmail(email)
 
@@ -46,7 +62,9 @@ class CustomerController(val repository: CustomerRepository, @Autowired val auth
         }
 
         return json
-    }
+    }*/
+
+
     
 
     @PutMapping("/{id}")
